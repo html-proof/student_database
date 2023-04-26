@@ -1,0 +1,111 @@
+import mysql.connector.errors
+from mysql import connector
+import sys
+
+db = connector.connect(
+    host="localhost",
+    username="root",
+    password="seban@2000",
+    database="student"
+)
+
+exc = db.cursor(buffered=True)
+while True:
+    def value():
+        try:
+            Personid = input("input the Roll number : ")
+            secondname = input("input the First name : ")
+            firstname = input("input the second name : ")
+            age = input("input the age : ")
+            sql = "INSERT INTO detail (Personid,Firstname,Lastname, Age) VALUES (%s, %s, %s, %s)"
+            val = (Personid, firstname, secondname, age)
+            exc.execute(sql, val)
+            db.commit()
+            print("value inserted successfully")
+        except ValueError:
+            pass
+        except mysql.connector.errors.IntegrityError:
+            print("Roll no is Exist...please check")
+
+
+    def search():
+        name = input("input the Roll_no: ")
+        name = name.strip()
+        sql = "SELECT * FROM detail WHERE Personid =%s"
+        val = (name,)
+        exc.execute(sql, val)
+        result = exc.fetchall()
+        for i in result:
+            print(list(i))
+        else:
+            print("no founded !!!")
+
+
+    def modify():
+        person_id = input("Input the Roll number: ")
+        name = person_id.strip()
+        sql = "SELECT * FROM detail WHERE Personid =%s"
+        val = (name,)
+        exc.execute(sql, val)
+        try:
+            num1 = int(input("****Modify***\n1. First Name\n2. Last Name\n3. Age\n"))
+            if num1 == 1:
+                new_name = input("Input the First Name: ").strip()
+                sql = "UPDATE detail SET Lastname=%s WHERE Personid=%s"
+                val = (new_name, person_id)
+                exc.execute(sql, val)
+                print("Change First Name Successful")
+            elif num1 == 2:
+                new_name = input("Input the Last Name: ").strip()
+                sql = "UPDATE detail SET Firstname=%s WHERE Personid=%s"
+                val = (new_name, person_id)
+                exc.execute(sql, val)
+                print("Change Last Name Successful")
+            elif num1 == 3:
+                new_age = int(input("Input the Age: "))
+                sql = "UPDATE detail SET Age=%s WHERE Personid=%s"
+                val = (new_age, person_id)
+                exc.execute(sql, val)
+                print("Change Age Successful")
+            else:
+                print("Failed to update")
+        except ValueError:
+            print("Invalid input")
+
+
+    def show():
+        sql = "select *from detail"
+        exc.execute(sql, )
+        for i in exc:
+            print(list(i))
+
+
+    def delete():
+        person_id = input("Input the Roll number: ")
+        name = person_id.strip()
+        sql = "DELETE FROM detail WHERE Personid=%s"
+        val = (name,)
+        exc.execute(sql, val)
+        print("Deleted successfully")
+
+
+    num2 = int(input(
+        ' 1.Insert Value \n 2.Search Value \n 3.Modify \n 4.Show Complete Table \n 5.Delete \n 6.Exit \n input the '
+        'Choose :'))
+    try:
+        if num2 == 1:
+            value()
+        elif num2 == 2:
+            search()
+        elif num2 == 3:
+            modify()
+        elif num2 == 4:
+            show()
+        elif num2 == 5:
+            delete()
+        elif num2 == 6:
+            sys.exit(0)
+    except ValueError:
+        pass
+    except KeyboardInterrupt:
+        pass
